@@ -4,10 +4,20 @@ class User < ApplicationRecord
     uid = auth[:uid]
     nickname = auth[:info][:nickname]
     image_url = auth[:info][:image]
+    token = auth[:credentials][:token]
+    secret = auth[:credentials][:secret]
 
-    self.find_or_create_by(provider: provider, uid: uid) do |user|
-      user.nickname = nickname
-      user.image_url = image_url
+    user = find_or_create_by(provider: provider, uid: uid) do |u|
+      u.nickname = nickname
+      u.image_url = image_url
+      u.tw_token = token
+      u.tw_token_secret = secret
     end
+
+    if user.tw_token != token || user.tw_token_secret != secret
+      user.update(tw_token: token, tw_token_secret: secret)
+    end
+
+    user
   end
 end

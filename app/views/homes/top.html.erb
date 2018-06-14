@@ -1,5 +1,11 @@
 <% if logged_in? %>
   <%= link_to 'ログアウト', logout_path %>
+  <br>
+  <% @client.favorites.each do | favorite | %>
+    <% if favorite.media.present? %>
+      <%= raw @client.oembed(favorite).html %>
+    <% end %>
+  <% end %>
 <% else %>
   <%= link_to 'Twitterでログイン', 'auth/twitter' %>
 <% end %>
